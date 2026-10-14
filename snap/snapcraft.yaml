@@ -1,0 +1,70 @@
+name: tailspin
+base: core26
+version: '7.0.0'
+title: tailspin
+summary: Log viewer with automatic highlighting of timestamps, addresses and more
+description: |
+  tailspin highlights log files without any setup. Dates, IP addresses,
+  URLs, UUIDs, numbers, paths and keywords like ERROR or WARN are colored
+  automatically. Output opens in a pager, or goes to stdout when piped.
+
+  **Examples**
+
+     tspin ./application.log
+     tspin --follow ./application.log
+     journalctl -f | tspin
+
+  The command is `tspin`, as upstream. If `tspin` is not found, run
+  `tailspin.tspin` or create the alias:
+
+     sudo snap alias tailspin.tspin tspin
+
+  **File access**
+
+  tailspin can read files in your home directory. To also read USB drives
+  and other removable media (/media, /mnt), run:
+
+     sudo snap connect tailspin:removable-media
+
+  To read system logs in /var/log (for example /var/log/syslog), run:
+
+     sudo snap connect tailspin:log-observe
+license: MIT
+grade: stable
+confinement: strict
+website: https://github.com/bensadeh/tailspin
+source-code: https://github.com/bensadeh/tailspin
+issues: https://github.com/bensadeh/tailspin/issues
+contact: https://github.com/sidalit/tailspin-snap/issues
+
+platforms:
+  amd64:
+  arm64:
+  armhf:
+  ppc64el:
+  riscv64:
+  s390x:
+
+apps:
+  tspin:
+    command: bin/tspin
+    completer: share/bash-completion/completions/tspin
+    plugs:
+      - home
+      - removable-media
+      - log-observe
+
+parts:
+  tailspin:
+    plugin: rust
+    source: https://github.com/bensadeh/tailspin.git
+    source-tag: '7.0.0'
+    rust-channel: '1.93.0'
+    rust-ignore-toolchain-file: true
+    build-packages:
+      - build-essential
+    override-build: |
+      craftctl default
+      sed 's/ tspin$/ tspin tailspin.tspin/' completions/tspin.bash \
+        | install -Dm644 /dev/stdin "$CRAFT_PART_INSTALL/share/bash-completion/completions/tspin"
+      install -Dm644 LICENCE "$CRAFT_PART_INSTALL/share/doc/tailspin/LICENSE"
