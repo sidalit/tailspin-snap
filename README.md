@@ -75,7 +75,11 @@ tspin --theme ~/tailspin-theme.toml ./application.log
 
 ## Update to a new upstream release
 
-Change `version` and `source-tag` in `snap/snapcraft.yaml`, then rebuild.
+Change `source-tag` in `snap/snapcraft.yaml`, then rebuild.
+
+## Automation
+
+Builds, publishing, and dependency updates use [snap-automation](https://github.com/sidalit/snap-automation).
 
 ## License
 
