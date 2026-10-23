@@ -33,8 +33,12 @@ license: MIT
 grade: stable
 confinement: strict
 website: https://github.com/bensadeh/tailspin
-source-code: https://github.com/bensadeh/tailspin
-issues: https://github.com/bensadeh/tailspin/issues
+source-code:
+  - https://github.com/bensadeh/tailspin
+  - https://github.com/sidalit/tailspin-snap
+issues:
+  - https://github.com/bensadeh/tailspin/issues
+  - https://github.com/sidalit/tailspin-snap/issues
 contact: https://github.com/sidalit/tailspin-snap/issues
 
 platforms:
