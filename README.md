@@ -1,86 +1,82 @@
-# tailspin snap
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="snap/gui/tailspin-dark.png" />
+  <img src="snap/gui/tailspin.png" alt="tailspin logo" width="128" />
+</picture>
+
+# tailspin
+
+**Read logs with automatic highlighting.**
 
 [![tailspin](https://snapcraft.io/tailspin/badge.svg)](https://snapcraft.io/tailspin)
+[![Base: core26](https://img.shields.io/badge/Base-core26-2C8C3C?logo=canonical&logoColor=white)](https://snapcraft.io/core26)
+![Confinement: strict](https://img.shields.io/badge/Confinement-strict-2C8C3C)
+[![Maintainer: sidaliteir](https://img.shields.io/badge/Maintainer-sidaliteir-2C8C3C?logo=snapcraft&logoColor=white)](https://snapcraft.io/publisher/sidaliteir)
+![Architectures: amd64 and arm64](https://img.shields.io/badge/Architectures-amd64%20%7C%20arm64-2C8C3C?logo=linux&logoColor=white)
 
-Snap packaging for [tailspin](https://github.com/bensadeh/tailspin), a log viewer that highlights timestamps, addresses and other patterns automatically.
+[Getting Started](#getting-started) · [Configure](#configure) · [Limitations](#limitations) · [Build](#build) · [Support](#support) · [License](#license)
 
-Unofficial build, not affiliated with or endorsed by the tailspin project.
+Unofficial snap packaging for [tailspin](https://github.com/bensadeh/tailspin), a log viewer that highlights timestamps, addresses and other patterns automatically.
 
-## Build
+</div>
 
-```bash
-snapcraft pack
-```
+---
 
-## Install and try
+## Getting Started
 
 <a href="https://snapcraft.io/tailspin"><img alt="Get it from the Snap Store" src="https://snapcraft.io/en/dark/install.svg" width="180"></a>
 
 ```bash
-sudo snap install tailspin                   # or a local build: ./tailspin_7.0.0_*.snap --dangerous
-sudo snap connect tailspin:removable-media   # optional: /media, /mnt
-sudo snap connect tailspin:log-observe       # optional: /var/log
-tspin ./application.log
-journalctl -f | tspin
+sudo snap install tailspin
+tailspin.tspin ./application.log
 ```
 
-The command is `tspin`, as upstream. Until the Snap Store grants the `tspin` auto-alias, run it as `tailspin.tspin` or create the alias yourself:
+For the shorter upstream command, create the alias if `tspin` is not already available:
 
 ```bash
 sudo snap alias tailspin.tspin tspin
 ```
 
-## Known limitations
+## Configure
 
-### System logs in /var/log
+There are no `snap set` options.
 
-Reading files in `/var/log` needs the `log-observe` interface, which is not connected automatically:
+| Setting | Value / default |
+|---|---|
+| Theme file | `~/snap/tailspin/current/.config/tailspin/theme.toml` |
+| Alternative theme | `--theme <path>` to a readable TOML file |
+| Pager | `--pager` or `TAILSPIN_PAGER`; defaults to `less` |
 
-```bash
-sudo snap connect tailspin:log-observe
-tspin /var/log/syslog
-```
+Generate a starting theme in a visible home folder with `tailspin.tspin --generate-default-theme > ~/tailspin-theme.toml`, then select it with `--theme ~/tailspin-theme.toml`.
 
-Normal file permissions still apply: most logs are readable only by root and members of the `adm` group. Without the interface, pipe the log in instead:
-
-```bash
-cat /var/log/syslog | tspin
-journalctl -f | tspin
-```
-
-### Commands run with --exec
-
-`--exec` runs its command inside the snap, so only basic tools from the snap's base are available. Host programs such as `kubectl` or `docker` are not found. Pipe their output instead:
+Optional file access:
 
 ```bash
-kubectl logs -f pod_name | tspin
+sudo snap connect tailspin:removable-media  # /media and /mnt
+sudo snap connect tailspin:log-observe      # /var/log
 ```
 
-The same applies to a custom pager set with `--pager` or `TAILSPIN_PAGER`: the default `less` works, other pagers installed on the host do not.
+## Limitations
 
-### Theme file
+- Reading `/var/log` also requires normal file permissions, commonly root or membership in `adm`. Alternatively, pipe logs from the host: `journalctl -f | tailspin.tspin`.
+- `--exec` and custom pagers run inside the snap. Host-only commands such as `kubectl` or `docker` are unavailable; pipe their output instead. The default `less` works.
+- Hidden host configuration directories such as `~/.config` are inaccessible. Use the snap's theme path or a visible file in your home folder.
 
-The snap reads its theme from `~/snap/tailspin/current/.config/tailspin/theme.toml` instead of `~/.config/tailspin/theme.toml`, and it cannot read hidden folders such as `~/.config`. Create the theme in the snap's folder:
+## Build
 
 ```bash
-mkdir -p ~/snap/tailspin/current/.config/tailspin
-tspin --generate-default-theme > ~/snap/tailspin/current/.config/tailspin/theme.toml
+git clone https://github.com/sidalit/tailspin-snap.git
+cd tailspin-snap
+sudo snap install snapcraft --classic
+snapcraft pack
 ```
 
-Or keep it in a visible folder and pass it explicitly:
+## Support
 
-```bash
-tspin --theme ~/tailspin-theme.toml ./application.log
-```
-
-## Update to a new upstream release
-
-Change `version` in `snap/snapcraft.yaml`, then rebuild.
-
-## Automation
-
-Builds, publishing, and dependency updates use [snap-automation](https://github.com/sidalit/snap-automation).
+- **Installation or snap issues:** [open a packaging issue](https://github.com/sidalit/tailspin-snap/issues).
+- **Application bugs:** [report them upstream](https://github.com/bensadeh/tailspin/issues).
 
 ## License
 
-The packaging is MIT-licensed (see `LICENSE`). tailspin is MIT-licensed; its dependencies carry their own licenses.
+Snap packaging: [MIT](https://github.com/sidalit/tailspin-snap/blob/main/LICENSE).
