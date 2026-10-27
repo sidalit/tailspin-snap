@@ -29,13 +29,7 @@ Unofficial snap packaging for [tailspin](https://github.com/bensadeh/tailspin), 
 
 ```bash
 sudo snap install tailspin
-tailspin.tspin ./application.log
-```
-
-For the shorter upstream command, create the alias if `tspin` is not already available:
-
-```bash
-sudo snap alias tailspin.tspin tspin
+tspin ./application.log
 ```
 
 ## Configure
@@ -48,7 +42,7 @@ There are no `snap set` options.
 | Alternative theme | `--theme <path>` to a readable TOML file |
 | Pager | `--pager` or `TAILSPIN_PAGER`; defaults to `less` |
 
-Generate a starting theme in a visible home folder with `tailspin.tspin --generate-default-theme > ~/tailspin-theme.toml`, then select it with `--theme ~/tailspin-theme.toml`.
+Generate a starting theme in a visible home folder with `tspin --generate-default-theme > ~/tailspin-theme.toml`, then select it with `--theme ~/tailspin-theme.toml`.
 
 Optional file access:
 
@@ -59,7 +53,7 @@ sudo snap connect tailspin:log-observe      # /var/log
 
 ## Limitations
 
-- Reading `/var/log` also requires normal file permissions, commonly root or membership in `adm`. Alternatively, pipe logs from the host: `journalctl -f | tailspin.tspin`.
+- Reading `/var/log` also requires normal file permissions, commonly root or membership in `adm`. Alternatively, pipe logs from the host: `journalctl -f | tspin`.
 - `--exec` and custom pagers run inside the snap. Host-only commands such as `kubectl` or `docker` are unavailable; pipe their output instead. The default `less` works.
 - Hidden host configuration directories such as `~/.config` are inaccessible. Use the snap's theme path or a visible file in your home folder.
 

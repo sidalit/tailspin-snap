@@ -15,11 +15,6 @@ description: |
      tspin --follow ./application.log
      journalctl -f | tspin
 
-  The command is `tspin`, as upstream. If `tspin` is not found, run
-  `tailspin.tspin` or create the alias:
-
-     sudo snap alias tailspin.tspin tspin
-
   **File access**
 
   tailspin can read files in your home directory. To also read USB drives
